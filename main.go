@@ -19,6 +19,7 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "download",
+				Aliases:     []string{"d"},
 				Usage:       "Download a song/playlist",
 				Destination: &song_url,
 			},
