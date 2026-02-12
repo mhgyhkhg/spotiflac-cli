@@ -19,3 +19,6 @@ git clone https://github.com/Superredstone/spotiflac-cli
 ./tools/fetch_spotiflac_backend.sh
 ```
 3) Go get all the dependencies
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
