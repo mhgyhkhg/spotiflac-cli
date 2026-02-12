@@ -1,5 +1,14 @@
 # spotiflac-cli
 
+Spotify downloader with playlist sync in mind.
+
+[![asciicast](https://asciinema.org/a/f6g275Bb2BVDoqsH.svg)](https://asciinema.org/a/f6g275Bb2BVDoqsH)
+
+## Usage 
+```bash
+spotiflac-cli -d $SPOTIFY_LINK
+```
+
 ## How to install 
 1) Clone the repo
 ```bash
