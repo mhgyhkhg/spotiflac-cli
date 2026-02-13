@@ -16,8 +16,10 @@ func main() {
 	application := app.NewApp()
 
 	cmd := &cli.Command{
-		Name: "spotiflac-cli",
+		Name:                  "spotiflac-cli",
 		EnableShellCompletion: true,
+		DefaultCommand:        "help",
+		Usage:                 "Spotify downloader with playlist sync in mind.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "download",
@@ -26,9 +28,9 @@ func main() {
 				Destination: &song_url,
 			},
 			&cli.StringFlag{
-				Name: "output",
-				Aliases: []string{"o"},
-				Usage: "set output folder",
+				Name:        "output",
+				Aliases:     []string{"o"},
+				Usage:       "set output folder",
 				Destination: &output_folder,
 			},
 		},
