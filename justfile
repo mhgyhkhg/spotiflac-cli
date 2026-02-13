@@ -39,7 +39,7 @@ build: windows darwin linux
 
 # Push binaries to GitHub releases
 publish tag: 
-	gh release upload $tag build/spotiflac-cli-*
+	gh release upload {{tag}} build/spotiflac-cli-*
 
 clean:
 	rm -rf build/
