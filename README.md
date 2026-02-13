@@ -2,11 +2,11 @@
 
 Spotify downloader with playlist sync in mind.
 
-[![asciicast](https://asciinema.org/a/f6g275Bb2BVDoqsH.svg)](https://asciinema.org/a/f6g275Bb2BVDoqsH)
+![spotiflac-cli](./assets/logo.png)
 
 ## Usage 
 ```bash
-spotiflac-cli -d $SPOTIFY_LINK
+spotiflac-cli download [URL]
 ```
 
 ## How to install 
