@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/Superredstone/spotiflac-cli/app"
 )
@@ -19,7 +18,10 @@ func Download(application *app.App, url string, output_folder string) error {
 		output_folder = DEFAULT_DOWNLOAD_OUTPUT_FOLDER
 	}
 
-	if strings.Contains(url, "https://open.spotify.com/track") {
+	url_type := GetUrlType(url)
+
+	switch url_type {
+	case UrlTypeTrack:
 		metadata, err := GetMetadata[MetadataSong](application, url)
 		if err != nil {
 			return err
@@ -40,10 +42,9 @@ func Download(application *app.App, url string, output_folder string) error {
 
 		_, err = application.DownloadTrack(downloadRequest)
 		return err
-	} else if strings.Contains(url, "https://open.spotify.com/playlist") {
+	case UrlTypePlaylist:
 		metadata, err := GetMetadata[MetadataPlaylist](application, url)
 		if err != nil {
-			fmt.Println("Unable to fetch metadata for song " + url)
 			return err
 		}
 
@@ -70,5 +71,5 @@ func Download(application *app.App, url string, output_folder string) error {
 		return nil
 	}
 
-	return errors.New("Invalid Spotify URL.")
+	return errors.New("Invalid URL.")
 }
