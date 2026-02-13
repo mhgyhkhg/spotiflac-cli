@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	var song_url string
+	var song_url, output_folder string
+
 	application := app.NewApp()
 
 	cmd := &cli.Command{
@@ -23,9 +24,15 @@ func main() {
 				Usage:       "Download a song/playlist",
 				Destination: &song_url,
 			},
+			&cli.StringFlag{
+				Name: "output",
+				Aliases: []string{"o"},
+				Usage: "Set output folder",
+				Destination: &output_folder,
+			},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			err := pkg.Download(application, song_url)
+			err := pkg.Download(application, song_url, output_folder)
 			return err
 		},
 	}

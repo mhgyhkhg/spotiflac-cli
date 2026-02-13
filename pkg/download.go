@@ -43,7 +43,11 @@ type MetadataPlaylist struct {
 	TrackList []MetadataTrack `json:"track_list"`
 }
 
-func Download(application *app.App, url string) error {
+func Download(application *app.App, url string, output_folder string) error {
+	if output_folder == "" {
+		output_folder = DEFAULT_DOWNLOAD_OUTPUT_FOLDER
+	}
+
 	if strings.Contains(url, "https://open.spotify.com/track") {
 		metadata, err := GetMetadata[MetadataSong](application, url)
 		if err != nil {
@@ -59,7 +63,7 @@ func Download(application *app.App, url string) error {
 			AlbumArtist: track.AlbumArtist,
 			ReleaseDate: track.ReleaseDate,
 			CoverURL:    track.Images,
-			OutputDir:   DEFAULT_DOWNLOAD_OUTPUT_FOLDER,
+			OutputDir:   output_folder,
 			SpotifyID:   track.SpotifyID,
 		}
 
@@ -84,7 +88,7 @@ func Download(application *app.App, url string) error {
 				AlbumArtist: track.AlbumArtist,
 				ReleaseDate: track.ReleaseDate,
 				CoverURL:    track.Images,
-				OutputDir:   DEFAULT_DOWNLOAD_OUTPUT_FOLDER,
+				OutputDir:   output_folder,
 				SpotifyID:   track.SpotifyID,
 			}
 
