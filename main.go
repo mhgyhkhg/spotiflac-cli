@@ -17,6 +17,7 @@ func main() {
 
 	cmd := &cli.Command{
 		Name: "spotiflac-cli",
+		EnableShellCompletion: true,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "download",

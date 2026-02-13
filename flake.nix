@@ -65,6 +65,10 @@
             src = ./.;
             vendorHash = "sha256-EpGgfiCqJjHEOphV2x8FmXeIFls7eq2NVxb/or4NLUo=";
 
+            nativeBuildInputs = with pkgs; [
+              installShellFiles
+            ];
+
             subPackages = [
               "."
             ];
@@ -74,6 +78,13 @@
               sed -i "s/git clone https:\/\/github.com\/afkarxyz\/SpotiFLAC.git//g" ./tools/fetch_spotiflac_backend.sh
               sed -i "s/rm -rf SpotiFLAC//g" ./tools/fetch_spotiflac_backend.sh
               ./tools/fetch_spotiflac_backend.sh
+            '';
+
+            postInstall = ''
+              installShellCompletion --cmd spotiflac-cli \
+                --bash <($out/bin/spotiflac-cli completion bash) \
+                --fish <($out/bin/spotiflac-cli completion fish) \
+                --zsh <($out/bin/spotiflac-cli completion zsh) 
             '';
           });
         }
