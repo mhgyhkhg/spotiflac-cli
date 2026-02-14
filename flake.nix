@@ -62,16 +62,18 @@
         }
       );
       packages = forEachSupportedSystem (
-        { pkgs }:
+        {
+          pkgs,
+          # Set this to true to ship with FFmpeg which is required to download songs from amazon and qobuz
+          withAdditionalServices ? false,
+        }:
         {
           default = pkgs.buildGoModule (finalAttrs: {
             inherit pname version;
             src = ./.;
             vendorHash = "sha256-EpGgfiCqJjHEOphV2x8FmXeIFls7eq2NVxb/or4NLUo=";
 
-            dependencies = with pkgs; [
-              ffmpeg_7
-            ];
+            dependencies = if withAdditionalServices then [ pkgs.ffmpeg_7 ] else [ ];
 
             nativeBuildInputs = with pkgs; [
               installShellFiles
