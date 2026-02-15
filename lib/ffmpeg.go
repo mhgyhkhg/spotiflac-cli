@@ -1,4 +1,4 @@
-package backend
+package lib
 
 import (
 	"archive/tar"

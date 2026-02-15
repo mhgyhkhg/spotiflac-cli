@@ -1,7 +1,7 @@
 //go:build !windows
 // +build !windows
 
-package backend
+package lib
 
 import (
 	"os/exec"

@@ -1,4 +1,4 @@
-package backend
+package lib
 
 import (
 	"encoding/json"
@@ -11,6 +11,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+		"os/exec"    
+	"runtime"
 )
 
 type QobuzDownloader struct {
@@ -158,20 +160,34 @@ func (q *QobuzDownloader) DownloadFromJumo(trackID int64, quality string) (strin
 	req.Header.Set("Referer", "https://jumo-dl.pages.dev/")
 
 	resp, err := client.Do(req)
+	
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
-
+if resp.StatusCode == 403 {
+		fmt.Printf("jumo-dl error  %s\n", resp.StatusCode)
+		var url string
+		 err := OpenBrowser(url)
+    if err != nil {
+        fmt.Printf("Failed to open browser: %v\n", err)
+    }
+		fmt.Print("Enter  URL: ")
+	fmt.Scanln(&url)  
+	return url, nil
+		}
 	if resp.StatusCode != 200 {
 		return "", fmt.Errorf("HTTP %d", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
+	
 	if err != nil {
 		return "", err
 	}
 
+
+fmt.Printf("\n[DEBUG] jumo-dl resp end")
 	var result struct {
 		URL string `json:"url"`
 	}
@@ -198,7 +214,17 @@ func (q *QobuzDownloader) DownloadFromStandard(apiBase string, trackID int64, qu
 		return "", err
 	}
 	defer resp.Body.Close()
-
+if resp.StatusCode == 403 {
+		fmt.Printf("error  %s\n", resp.StatusCode)
+		var url string
+		 err := OpenBrowser(apiURL)
+    if err != nil {
+        fmt.Printf("Failed to open browser: %v\n", err)
+    }
+		fmt.Print("Enter  URL: ")
+	fmt.Scanln(&url)  
+	return url, nil
+		}
 	if resp.StatusCode != 200 {
 		return "", fmt.Errorf("status %d", resp.StatusCode)
 	}
@@ -274,7 +300,7 @@ func (q *QobuzDownloader) GetDownloadURL(trackID int64, quality string, allowFal
 		var lastErr error
 		for _, p := range providers {
 
-			fmt.Printf("Trying Provider: %s (Quality: %s)...\n", p.Name, qual)
+			fmt.Printf("Trying Provider: %s%s (Quality: %s)...\n", p.Name,trackID, qual)
 
 			url, err := p.Func()
 			if err == nil {
@@ -448,7 +474,23 @@ func (q *QobuzDownloader) DownloadTrack(spotifyID, outputDir, quality, filenameF
 
 	return q.DownloadTrackWithISRC(deezerISRC, spotifyID, outputDir, quality, filenameFormat, includeTrackNumber, position, spotifyTrackName, spotifyArtistName, spotifyAlbumName, spotifyAlbumArtist, spotifyReleaseDate, useAlbumTrackNumber, spotifyCoverURL, embedMaxQualityCover, spotifyTrackNumber, spotifyDiscNumber, spotifyTotalTracks, spotifyTotalDiscs, spotifyCopyright, spotifyPublisher, spotifyURL, allowFallback, useFirstArtistOnly)
 }
+func OpenBrowser(url string) error {
+	var err error
 
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		// Windows uses 'rundll32' or 'start'
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	
+	return err
+}
 func (q *QobuzDownloader) DownloadTrackWithISRC(deezerISRC, spotifyID, outputDir, quality, filenameFormat string, includeTrackNumber bool, position int, spotifyTrackName, spotifyArtistName, spotifyAlbumName, spotifyAlbumArtist, spotifyReleaseDate string, useAlbumTrackNumber bool, spotifyCoverURL string, embedMaxQualityCover bool, spotifyTrackNumber, spotifyDiscNumber, spotifyTotalTracks int, spotifyTotalDiscs int, spotifyCopyright, spotifyPublisher, spotifyURL string, allowFallback bool, useFirstArtistOnly bool) (string, error) {
 	fmt.Printf("Fetching track info for ISRC: %s\n", deezerISRC)
 
